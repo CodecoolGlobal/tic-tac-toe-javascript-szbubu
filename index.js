@@ -10,14 +10,12 @@ const board2 = [
   ["","","",""],
   ["","","",""]];
 
-let hiddenBoard = [
-  ["","","",""],
-  ["","","",""],
-  ["","","",""],
-  ["","","",""]];
-
 function selectGame(data) {
   displayMessage(data, "black");
+
+
+
+  boardSize
 }
 
 function handleClick(data) {
@@ -52,11 +50,20 @@ displayMessage("message", "green");
 displayTextMessage("text message", "red");
 
 // from here my code
+let globalVariable = {
+  playerPlacedShips: 0,
+  playerCanPlace: 0,
+  shipsRemaining:
+  {
+    AI: 0,
+    player: 0,
+  },
+  AIShipPosition:[],
+  shootingPhase: false,
+  AITurn: false,
+}
 
-let playerPlacedShips = 0;
-let shootingPhase = false;
-
-function placeShip(x,y){
+function placeShip(x,y,){
   let posX = (x.charCodeAt()-65);
   let posY = y;
   if (board2[posX][posY]==="O")
@@ -73,19 +80,17 @@ function placeShip(x,y){
   {displayTextMessage("you can not place ship there", "red");}
   
   else {
-    board2[posX][y]="O";
+    board2[posX][posY]="O";
     displayBoard({boardnumber: 2,board: board2});
-    playerPlacedShips++;
+    globalVariable.playerPlacedShips++;
   };
-  if (playerPlacedShips>=3){
-    shootingPhase = true;
+  if (globalVariable.playerPlacedShips>=3){
+    globalVariable.shootingPhase = true;
     displayMessage("placing phase is over", "green");
-
   }
 }
 
 function checkGridForPlacing (x,y, player){
   let posX = (x.charCodeAt()-65);
   let posY = y;
-
 }
