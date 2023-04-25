@@ -18,6 +18,7 @@ let hiddenBoard = [
 
 function selectGame(data) {
   displayMessage(data, "black");
+   data.split( ",");
 }
 
 function handleClick(data) {
@@ -89,3 +90,15 @@ function checkGridForPlacing (x,y, player){
   let posY = y;
 
 }
+
+function datareader(data){
+
+}
+
+
+let data = "size:4,s:{s1:a1,s2:c4}";
+data.split(",")
+console.log(data);
+for ( let i = 0 ; i < data.length; i ++)
+let boardsize = data[0];
+let ship1 = data[1];

@@ -5,7 +5,7 @@ game mode selector
 
     I would split the game in 4 parts: player places ships - at the same time AI places ships.
 
-    we can have a board checker function used by the AI and the player to place ships (validates how many ships and if
+    we can have a board checker function used by the AI and the player to place ships validates how many ships and if
     those are next to each other
 
 when both AI and player placed their ships
