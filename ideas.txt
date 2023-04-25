@@ -1,0 +1,35 @@
+game mode selector
+    restart button refreshes boards
+    need a third hidden board
+    store in a variable that how many and what kind of ships on how big board
+
+    I would split the game in 4 parts: player places ships - at the same time AI places ships.
+
+    we can have a board checker function used by the AI and the player to place ships (validates how many ships and if
+    those are next to each other
+
+when both AI and player placed their ships
+
+shooting phase
+
+player shoots on board / result gets wrote out and ai should shoot automatically
+then player shoots
+and so on when someone sinks all the ships, its game over
+
+things to store in global variables:
+
+- game mode perhaps
+- game phase
+- if the ai shoots (when shot, the player is allowed to shoot again)
+- if its game over
+- perhaps game modes, and everything ssociated with it. board size, ships to place, ship size, etc
+
+functions to create:
+board validator
+ship placer
+shooter
+AI shooter
+
+
+
+

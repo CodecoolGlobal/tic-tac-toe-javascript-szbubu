@@ -1,87 +1,82 @@
-/* 
-    PLEASE DO NOT MODIFY THESE LINES,
-    THEY ARE REQUIRED FOR THE PROJECT
-    TO WORK
-*/
-
-// this function is called whenever you want to clear the representation
-// of the board (remove x & o). Carefull, the board is NOT updated in html!
-function resetBoard() {
-    board = [
-        ['', '', '',],
-        ['', '', '',],
-        ['', '', '',]
-    ];
-}
-
-// whenever you display a message you can use this function
-function displayMessage(message) {
-    document.getElementById('display').innerText = message;
-}
-
-// this will update the game board based on the value of
-// the parameter board
-function displayBoard(board) {
-    const cells = document.querySelectorAll('.cell.tile');
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[i].length; j++) {
-            cells[i * 3 + j].innerText = board[i][j];
-        }
-    }
-}
-
 function initGame() {
-    document.querySelector('.coordinates > input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            processHumanCoordinate(e.target.value);
-        }
-    });
-
-    document.querySelector('.mode > select').addEventListener('input', (e) => setGameMode(e.target.value));
-
-    document.querySelector('.ai > button').addEventListener('click', processAICoordinate);
-
-    document.querySelector('.restart > button').addEventListener('click', resetGame);
+  document.querySelector("#reset").addEventListener("click", resetGame);
+  document.querySelector("#aiShoot").addEventListener("click", () => {
+    const boardSize = document.getElementById("boardSize").value;
+    aiShoot({
+      x: String.fromCharCode(Math.floor(Math.random() * boardSize + 65)),
+      y: Math.floor(Math.random() * boardSize + 1),
+    })
+  });
+  for (const gameNumber in data) {
+    console.log(data[gameNumber]);
+    document.getElementById("mode").insertAdjacentHTML("beforeend", `
+      <option value=${data[gameNumber]}>${gameNumber}</option>
+    `)
+  }
+  document.querySelector('.mode > select').addEventListener('input', (e) => selectGame(e.target.value));
 }
 
-// isVisible = true  - will show the element
-// isVisible = false - will hide the element
-function setHTMLvisibilityForInputGameMode(isVisible) {
-    if (isVisible) {
-        document.getElementsByClassName('mode')[0].classList.remove('hide');
-    } else {
-        document.getElementsByClassName('mode')[0].classList.add('hide');
+function displayBoard(data) {
+  const grid = data.board;
+  const containerElement = document.querySelector(`.container${data.boardnumber}`);
+  containerElement.innerHTML = "";
+  containerElement.insertAdjacentHTML("afterbegin", creatHeadRow(grid.length))
+  for (let x = 0; x < grid.length; x++) {
+    const rowElement = document.createElement("div");
+    rowElement.classList.add("row");
+    rowElement.insertAdjacentHTML(
+      "afterbegin",
+      `<div class="head-cell" style='heigth: ${90 / (grid.length + 1)}vh; width: 3vh'>${String.fromCharCode(65 + x)}</div>`,
+    )
+    for (let y = 0; y < grid[x].length; y++) {
+      const cellElement = document.createElement("div");
+      cellElement.classList.add("cell");
+      cellElement.innerHTML = grid[x][y];
+      cellElement.style.width = `${80 / (grid[x].length + 1)}vh`;
+      cellElement.style.height = `${80 / (grid[x].length + 1)}vh`;
+      cellElement.style.fontSize = `${(80 / (grid[x].length + 1)) - 5}vh`;
+      cellElement.dataset.x = String.fromCharCode(65 + x);
+      cellElement.dataset.y = y;
+      cellElement.addEventListener("click", (e) => {
+        handleClick({
+          x: cellElement.dataset.x,
+          y: cellElement.dataset.y,
+          clickType: "left",
+        });
+      });
+      cellElement.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        handleClick({
+          x: cellElement.dataset.x,
+          y: cellElement.dataset.y,
+          clickType: "right",
+        });
+      });
+      rowElement.appendChild(cellElement);
     }
+    containerElement.appendChild(rowElement);
+  }
 }
 
-// isVisible = true  - will show the element
-// isVisible = false - will hide the element
-function setHTMLvisibilityForInputHumanCoordinates(isVisible) {
-    if (isVisible) {
-        document.querySelector('.coordinates').classList.remove('hide');
-    } else {
-        document.querySelector('.coordinates').classList.add('hide');
-    }
+function creatHeadRow(length) {
+  let result = `<div class='head-row'><div style='width: ${80 / (length + 1)}vh'></div>`;
+  for (let i = 1; i <= length; i++) {
+    console.log(length);
+    result += `<div class="head-cell" style='width: ${80 / (length + 1)}vh'>${i}</div>`
+  }
+  return result + "</div>";
 }
 
-// isVisible = true  - will show the element
-// isVisible = false - will hide the element
-function setHTMLvisibilityForInputAiCoordinatesInput(isVisible) {
-    if (isVisible) {
-        document.querySelector('.ai').classList.remove('hide');
-    } else {
-        document.querySelector('.ai').classList.add('hide');
-    }
+function displayMessage(message, color) {
+  document.getElementById("display").style.color = color;
+  document.getElementById("display").innerHTML = message;
 }
 
-// isVisible = true  - will show the element
-// isVisible = false - will hide the element
-function setHTMLvisibilityForButtonLabeledReset(isVisible) {
-    if (isVisible) {
-        document.querySelector('.restart').classList.remove('hide');
-    } else {
-        document.querySelector('.restart').classList.add('hide');
-    }
+function displayTextMessage(message, color) {
+  document.getElementById("textDisplay").style.color = color;
+  document.getElementById("textDisplay").innerHTML = message;
 }
 
-initGame();
+window.addEventListener("load", () => {
+  initGame();
+});

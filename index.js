@@ -1,86 +1,91 @@
-let gameTurn = 0;
-let currentPlayer;
-let board;
+let board = [
+  ["","","",""],
+  ["","","",""],
+  ["","","",""],
+  ["","","",""]];
 
-// this function will be called whenever the user changes
-// the `select` input labeled `please select game mode`
-function setGameMode(selectedValue) {
-    switch (selectedValue) {
-        case 'human-human':
-            isPlayerXHuman = true;
-            isPlayerYHuman = true;
-            break;
-        case 'human-ai':
-            isPlayerXHuman = true;
-            isPlayerYHuman = false;
-            break;
-    }
-    resetBoard();
+const board2 = [
+  ["","","",""],
+  ["","","",""],
+  ["","","",""],
+  ["","","",""]];
 
-    setHTMLvisibilityForInputGameMode(false);
-    setHTMLvisibilityForInputHumanCoordinates(true);
-    setHTMLvisibilityForInputAiCoordinatesInput(false);
-    setHTMLvisibilityForButtonLabeledReset(true);
-    displayMessage("Player X's turn");
+let hiddenBoard = [
+  ["","","",""],
+  ["","","",""],
+  ["","","",""],
+  ["","","",""]];
+
+function selectGame(data) {
+  displayMessage(data, "black");
 }
 
-// this function is called whenever the user presses the `enter`
-// key in the input box labeled `enter coordinates`
-// paramerter: input - the content of the input box
-function processHumanCoordinate(input) {
-    console.log(`'processHumanCoordinate('${input}')`);
-    if (gameTurn % 2 === 0) {
-        currentPlayer = 'diamond';
-    } else {
-        currentPlayer = 'pets';
-    }
-
-    let coordinates = extractCoordinates(input);
-    board[coordinates.x][coordinates.y] = currentPlayer;
-
-    const winningPlayer = getWinningPlayer(board);
-    if (winningPlayer) {
-        displayMessage(`Player ${currentPlayer} has won !`);
-    }
-
-    gameTurn += 1;
-    displayBoard(board);
-
-    // TODO: add a message stating either
-    // Player X's turn
-    // Player O's turn
-    // It's a tie
-    // Player X won 
-    // Player O won 
-
-    // TODO: add conditions to hide the coordinates screen for 
-    // the human player & show for the button to generate AI 
-    // coordinates
+function handleClick(data) {
+  displayMessage(data.x + data.y + data.clickType);
+ 
+  if (!shootingPhase)
+  {placeShip(data.x, data.y);
+  }
+  /*if (shootingPhase)
+  {}
+  */
 }
 
-// this function is called whenever the user presses
-// the button labeled `Generate AI coordinates`
-function processAICoordinate() {
-    console.log(`processAICoordinate()`);
-}
-
-// this function is called when the user clicks on 
-// the button labeled `Restart Game`
 function resetGame() {
-    console.log(`resetGame()`);
+  board = [];
+  for(let i = 0; i < 4; i++) {
+    board.push([])
+    for(let j = 0; j < 4; j++) {
+      board[i].push("");
+    }
+  }
+  displayBoard({boardnumber: 1,board: board});
 }
 
-// this function should change from A1..C3 to coordinates
-// that are present in the `board` global variable
-function extractCoordinates(input) {
-    // this is a sample of what should be returned if the
-    // the user had typed `A1`
-    // you need to add the to also treat other cases (A2..C3)
-    return { x: 0, y: 0};
+function aiShoot(data) {
+  console.log(data);
 }
 
-// this function should return `X` or `O` or undefined (carefull it's not a string )
-// based on interpreting the values in the board variable
-function getWinningPlayer(board) {
-    return undefined;
+displayBoard({boardnumber: 1,board: board});
+displayBoard({boardnumber: 2,board: board2});
+displayMessage("message", "green");
+displayTextMessage("text message", "red");
+
+// from here my code
+
+let playerPlacedShips = 0;
+let shootingPhase = false;
+
+function placeShip(x,y){
+  let posX = (x.charCodeAt()-65);
+  let posY = y;
+  if (board2[posX][posY]==="O")
+  {
+    displayTextMessage("there is a ship there already", "red");
+  }
+  else if (posX-1 >= 0 && board2[posX-1][posY]==="O")
+  {displayTextMessage("you can not place ship there", "red");}
+  else if (posX+1 < board2.length && board2[posX+1][posY]==="O")
+  {displayTextMessage("you can not place ship there", "red");}
+  else if (posY-1 >= 0 && board2[posX][posY-1]==="O")
+  {displayTextMessage("you can not place ship there", "red");}
+  else if (posY+1 < board2[posX].length && board2[posX][posY+1]==="O")
+  {displayTextMessage("you can not place ship there", "red");}
+  
+  else {
+    board2[posX][y]="O";
+    displayBoard({boardnumber: 2,board: board2});
+    playerPlacedShips++;
+  };
+  if (playerPlacedShips>=3){
+    shootingPhase = true;
+    displayMessage("placing phase is over", "green");
+
+  }
+}
+
+function checkGridForPlacing (x,y, player){
+  let posX = (x.charCodeAt()-65);
+  let posY = y;
+
 }
