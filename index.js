@@ -1,7 +1,7 @@
 let board = [["P","I","C","K",""],["","","","", ""],["G","A","M","E", ""],["","","","", ""], ["M", "O", "D", "E", ""]];
 let board2 = [["P","I","C","K",""],["","","","", ""],["G","A","M","E", ""],["","","","", ""], ["M", "O", "D", "E", ""]];
-displayMessage("Pick a game mode!", "red");
-displayTextMessage("<= here to the left!", "red");
+displayMessage("Pick a game mode!", "purple");
+displayTextMessage("<= here to the left!", "white");
 
 let shipPositions = {
   player: [],
@@ -26,7 +26,7 @@ function selectGame(data) {
   let randomShip2 = [];
 
   if (data === "size:4,s:{s1:a1,s2:c4}"){
-    displayMessage("AI has placed it's ships randomly, place your ships ", "red");
+    displayMessage("AI has placed it's ships randomly, place your ships ", "purple");
     boardSize = 4;
     refreshBoard(boardSize);
     console.log("this is boardsize"+boardSize);
@@ -107,7 +107,7 @@ function handleClick(data) {
   playerShoot(x, y);
   }
   else if (!playerTurn){
-    displayMessage("It is the AI's turn to shoot!", "red");
+    displayMessage("It is the AI's turn to shoot!", "purple");
   }
 
 }
@@ -129,7 +129,7 @@ function getRandomCoordinates()
 
 function aiShoot(data) {
   if (playerTurn){
-    displayMessage("It's your turn to shoot.", "green");
+    displayMessage("It's your turn to shoot.", "purple");
   }
   else if(!playerTurn){
   let x = getRandomCoordinates(); 
@@ -138,9 +138,9 @@ function aiShoot(data) {
   let hit = isItAHit(x, y,"ai");
 
   if (hit === 1){
-    board2[x][y] = 'Ø';
-    displayMessage("The AI hit your ship!", "green");
-    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","red");
+    board2[x][y] = '💥';
+    displayMessage("The AI hit your ship!", "purple");
+    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","white");
     shipPositions.player.forEach((element) => {
       if (x === element.x && y === element.y) {
         element.alive = false;
@@ -151,16 +151,16 @@ function aiShoot(data) {
     playerTurn = true;
   }
   else if( hit === 3 ){
-    board2[x][y] = 'X';
-    displayMessage("It's a miss!", "green");
-    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","red");
+    board2[x][y] = '✥';
+    displayMessage("It's a miss!", "purple");
+    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","white");
     displayBoard({boardnumber: 2,board: board2});
     playerTurn = true;
   }
 
   else if (hit === 2){
     aiShoot("_");
-    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","red");
+    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","white");
   
   }
 }
@@ -171,15 +171,15 @@ displayBoard({boardnumber: 2,board: board2});
 
 function placeShip(x, y) {
   if (!validatePlacementPosition(x, y, "player")) {
-    displayMessage("You can not place ship there!", "red");
+    displayMessage("You can not place ship there!", "purple");
   } else {
   let ship = {x:x, y:y, alive:true};
   shipPositions.player.push(ship);
-  board2[x][y] = 'O';
+  board2[x][y] = '🛳';
   displayBoard({boardnumber: 2,board: board2});
   if (shipPositions.player.length >= shipPositions.ai.length) {
     shootingPhase = true;
-    displayMessage("Placing phase is over!", "red");
+    displayMessage("Placing phase is over!", "purple");
   }
  }
 }
@@ -228,7 +228,7 @@ function validatePlacementPosition(x, y, whichPlayer) {
         hit = 1; // if its a hit, return 1
       }
     });
-        if (b[x][y] === 'X' || b[x][y] === 'Ø') {
+        if (b[x][y] === '✥' || b[x][y] === '💥') {
           hit = 2; /// if it has already been shot there, return 2
         } else if (b[x][y] === '') {
           if(hit===1){
@@ -243,10 +243,10 @@ function validatePlacementPosition(x, y, whichPlayer) {
   function playerShoot(x, y) {
     let hit = isItAHit(x, y,"player"); // 1 for hit, 2 for already shooting there, 3 for a miss
     if (hit === 1){
-      board[x][y] = 'Ø';
+      board[x][y] = '🎆';
       displayBoard({boardnumber: 1,board: board});
-      displayMessage("You hit ai's ship!", "green");
-      displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","red");
+      displayMessage("You hit ai's ship!", "purple");
+      displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","white");
       shipPositions.ai.forEach((element) => {
         if (x === element.x && y === element.y) {
           element.alive = false;
@@ -257,14 +257,14 @@ function validatePlacementPosition(x, y, whichPlayer) {
       playerTurn = false;
     }
     else if( hit === 3 ){
-      board[x][y] = 'X';
+      board[x][y] = '✥';
       displayMessage("It's a miss!", "green");
       displayBoard({boardnumber: 1,board: board});
       playerTurn = false;
     }
 
     else if (hit === 2){
-      displayMessage("You have already shot there Sherlock!", "green");
+      displayMessage("You have already shot there Sherlock!", "purple");
     }
   }
   function checkGameOver(){
