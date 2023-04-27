@@ -26,7 +26,7 @@ function selectGame(data) {
   let randomShip2 = [];
 
   if (data === "size:4,s:{s1:a1,s2:c4}"){
-    displayMessage("AI has placed it's ships randomly", "red");
+    displayMessage("AI has placed it's ships randomly, place your ships ", "red");
     boardSize = 4;
     refreshBoard(boardSize);
     console.log("this is boardsize"+boardSize);
@@ -56,7 +56,7 @@ function selectGame(data) {
       }
     }
     shipPositions.ai.push(randomShip2);
-    
+    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase +" phase, and the AI has "+ displayAiShip().ship + " ships left","red");
   }
   
   else if(data !== "size:4,s:{s1:a1,s2:c4}"){
@@ -140,6 +140,7 @@ function aiShoot(data) {
   if (hit === 1){
     board2[x][y] = 'Ø';
     displayMessage("The AI hit your ship!", "green");
+    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","red");
     shipPositions.player.forEach((element) => {
       if (x === element.x && y === element.y) {
         element.alive = false;
@@ -152,12 +153,14 @@ function aiShoot(data) {
   else if( hit === 3 ){
     board2[x][y] = 'X';
     displayMessage("It's a miss!", "green");
+    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","red");
     displayBoard({boardnumber: 2,board: board2});
     playerTurn = true;
   }
 
   else if (hit === 2){
     aiShoot("_");
+    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","red");
   
   }
 }
@@ -243,6 +246,7 @@ function validatePlacementPosition(x, y, whichPlayer) {
       board[x][y] = 'Ø';
       displayBoard({boardnumber: 1,board: board});
       displayMessage("You hit ai's ship!", "green");
+      displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","red");
       shipPositions.ai.forEach((element) => {
         if (x === element.x && y === element.y) {
           element.alive = false;
@@ -284,4 +288,31 @@ function validatePlacementPosition(x, y, whichPlayer) {
         displayMessage("Game Over! You have lost :(", "purple");
       }
     }
+  }
+  function displayAiShip(){
+    let counter = 0 ;
+    shipPositions.ai.forEach((element) =>{
+      if (element.alive === true){
+        counter ++;
+      }
+    }
+) 
+let result = {};
+if( shootingPhase ){
+  result.phase = "shooting"
+}else if(
+  !shootingPhase 
+){
+  result.phase = "placing"
+}
+if(playerTurn  ){
+  result.whose = "player "
+}else if( 
+  !playerTurn 
+){
+  result.whose = "Ai"
+}
+result.shipsleft = counter 
+ console.log(result)
+    return result ;
   }
