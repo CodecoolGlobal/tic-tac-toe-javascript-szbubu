@@ -56,7 +56,7 @@ function selectGame(data) {
       }
     }
     shipPositions.ai.push(randomShip2);
-    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase +" phase, and the AI has "+ displayAiShip().ship + " ships left","red");
+    displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase +" phase, and the AI has "+ displayAiShip().ship + " ships left","white");
   }
   
   else if(data !== "size:4,s:{s1:a1,s2:c4}"){
@@ -243,7 +243,7 @@ function validatePlacementPosition(x, y, whichPlayer) {
   function playerShoot(x, y) {
     let hit = isItAHit(x, y,"player"); // 1 for hit, 2 for already shooting there, 3 for a miss
     if (hit === 1){
-      board[x][y] = '🎆';
+      board[x][y] = '💥';
       displayBoard({boardnumber: 1,board: board});
       displayMessage("You hit ai's ship!", "purple");
       displayTextMessage("its " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","white");
@@ -258,7 +258,7 @@ function validatePlacementPosition(x, y, whichPlayer) {
     }
     else if( hit === 3 ){
       board[x][y] = '✥';
-      displayMessage("It's a miss!", "green");
+      displayMessage("It's a miss!", "purple");
       displayBoard({boardnumber: 1,board: board});
       playerTurn = false;
     }
