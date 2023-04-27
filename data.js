@@ -1,4 +1,5 @@
 const data = {
+    RandomGame: "random",
     game1: "size:4,s:{s1:a1,s2:c4}",
     game2: "size:4,s:{s1:b2,s2:d4}",
     game3: "size:4,s:{s1:a3,s2:c1}",
