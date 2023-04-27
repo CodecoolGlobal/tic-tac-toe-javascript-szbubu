@@ -1,5 +1,7 @@
-let board = [["w","w","",""],["","","","0"],["q","","",""],["","","",""]];
-let board2 = [["w","w","","",""],["","","","0", ""],["q","","","", ""],["","0","0","", ""], ["", "", "", "", ""]];
+let board = [["P","I","C","K",""],["","","","", ""],["G","A","M","E", ""],["","","","", ""], ["M", "O", "D", "E", ""]];
+let board2 = [["P","I","C","K",""],["","","","", ""],["G","A","M","E", ""],["","","","", ""], ["M", "O", "D", "E", ""]];
+displayMessage("Pick a game mode!", "red");
+displayTextMessage("<= here to the left!", "red");
 
 let shipPositions = {
   player: [],
@@ -163,8 +165,6 @@ function aiShoot(data) {
 
 displayBoard({boardnumber: 1,board: board});
 displayBoard({boardnumber: 2,board: board2});
-displayMessage("message", "green");
-displayTextMessage("text message", "red");
 
 function placeShip(x, y) {
   if (!validatePlacementPosition(x, y, "player")) {
@@ -225,9 +225,6 @@ function validatePlacementPosition(x, y, whichPlayer) {
         hit = 1; // if its a hit, return 1
       }
     });
-  
-    for (let i = 0; i < b.length; i++) {
-      for (let j = 0; j < b.length; j++) {
         if (b[x][y] === 'X' || b[x][y] === 'Ø') {
           hit = 2; /// if it has already been shot there, return 2
         } else if (b[x][y] === '') {
@@ -236,9 +233,7 @@ function validatePlacementPosition(x, y, whichPlayer) {
           }
           else{hit =3;
           }
-        }
-      }
-    } ////
+    }
     return hit;
   }
 
