@@ -1,7 +1,7 @@
-let board = [["P","I","C","K",""],["","","","", ""],["G","A","M","E", ""],["","","","", ""], ["M", "O", "D", "E", ""]];
-let board2 = [["P","I","C","K",""],["","","","", ""],["G","A","M","E", ""],["","","","", ""], ["M", "O", "D", "E", ""]];
-displayMessage("Pick a game mode!", "red");
-displayTextMessage("<= here to the left!", "purple");
+let board = [["C","L","I","C","K",""],["O","N","","", "",""],["S","E","L","E", "C","T"],["G","A","M","E", "", ""], ["M", "O", "D", "E", "!",""]];
+let board2 = [["C","L","I","C","K",""],["O","N","","", "",""],["S","E","L","E", "C","T"],["G","A","M","E", "", ""], ["M", "O", "D", "E", "!",""]];
+displayMessage("Click on 'Select game mode!'", "purple");
+displayTextMessage("<= here on the left!", "purple");
 
 let shipPositions = {
   player: [],
@@ -54,7 +54,7 @@ function selectGame(data) {
       }
     }
     shipPositions.ai.push(randomShip2);
-    displayTextMessage("It's " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase +" phase, and the AI has "+ displayAiShip().ship + " ships left","purple");
+    displayTextMessage("It's " + displayAiShip().whose +"'s turn, "+ displayAiShip().phase +" phase, and the AI has "+ displayAiShip().ship + " ships left","purple");
   }
   
   else if(data !== "random"){
@@ -75,7 +75,8 @@ function selectGame(data) {
   }
   });
   refreshBoard(boardSize);
-  displayMessage("Please place your ships, you can place "+shipPositions.ai.length+"ships.", "purple");
+  displayMessage("Please, place your ships, you can place "+shipPositions.ai.length+" ships.", "purple");
+  displayTextMessage("It's " + displayAiShip().whose +"'s turn, "+ displayAiShip().phase +" phase, place your ships onto the right board!","purple");
 }
   }
   
@@ -140,7 +141,6 @@ function aiShoot(data) {
   if (hitOrMiss === "hit"){
     board2[x][y] = '💥';
     displayMessage("The AI hit your ship!", "red");
-    displayTextMessage("It's " + displayAiShip().whose +"'s turn in the "+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","purple");
     shipPositions.player.forEach((element) => {
       if (x === element.x && y === element.y) {
         element.alive = false;
@@ -149,18 +149,19 @@ function aiShoot(data) {
     displayBoard({boardnumber: 2,board: board2});
     checkGameOver();
     playerTurn = true;
+    displayTextMessage("It's " + displayAiShip().whose +"'s turn in the "+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","purple");
   }
   else if( hitOrMiss === "miss" ){
     board2[x][y] = '✥';
     displayMessage("AI missed.", "purple");
-    displayTextMessage("It's " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","purple");
     displayBoard({boardnumber: 2,board: board2});
     playerTurn = true;
+    displayTextMessage("It's " + displayAiShip().whose +"'s turn, "+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","purple");
   }
 
   else if (hitOrMiss === "already"){
     aiShoot();
-    displayTextMessage("It's " + displayAiShip().whose +"'s turn,"+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","purple");
+    displayTextMessage("It's " + displayAiShip().whose +"'s turn, "+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","purple");
   
   }
 }
@@ -179,7 +180,8 @@ function placeShip(x, y) {
   displayBoard({boardnumber: 2,board: board2});
   if (shipPositions.player.length >= shipPositions.ai.length) {
     shootingPhase = true;
-    displayMessage("Placing phase is over, start shooting", "purple");
+    displayMessage("Placing phase is over, start shooting!", "purple");
+    displayTextMessage("It's " + displayAiShip().whose +"'s turn, "+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","purple");
   }
  }
 }
@@ -253,12 +255,14 @@ function validatePlacementPosition(x, y, whichPlayer) {
       displayBoard({boardnumber: 1,board: board});
       checkGameOver();
       playerTurn = false;
+      displayTextMessage("It's " + displayAiShip().whose +"'s turn, "+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","purple");
     }
     else if( hitOrMiss === "miss" ){
       board[x][y] = '✥';
       displayMessage("It's a miss!", "purple");
       displayBoard({boardnumber: 1,board: board});
       playerTurn = false;
+      displayTextMessage("It's " + displayAiShip().whose +"'s turn, "+ displayAiShip().phase+" phase, and the AI has "+ displayAiShip().shipsleft + " ships left","purple");
     }
 
     else if (hitOrMiss === "already"){
