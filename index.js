@@ -6,17 +6,81 @@ let shipPositions = {
   ai: [],
 };
 let shootingPhase = false;
-let playerTurn = true;
+let playerTurn = true; /*this two global variables could be merged or concatanates itno one globa variable such as
+let whoseTurnAndWhichPhase=0, if playerturn and placing phase = 1, if playerturn and shooting phase = 2, etc...*/
+
 
 
 
 function selectGame(data) {
-  let splittedData = data.split(",");
-  let boardSize = parseInt(splittedData[0][5]);
+  let boardSize = 0;
   board = [];
+  board2 = [];
   shipPositions.player = [];
   shipPositions.ai = [];
-  board2 = [];
+  shootingPhase = false;
+  playerTurn = true;
+  let randomShip1= [];
+  let randomShip2 = [];
+
+  if (data === "size:4,s:{s1:a1,s2:c4}"){
+    displayMessage("AI has placed it's ships randomly", "red");
+    boardSize = 4;
+    refreshBoard(boardSize);
+    console.log("this is boardsize"+boardSize);
+    randomShip1 = {
+      x: Math.round(Math.random()*(boardSize-1)),
+      y: Math.round(Math.random()*(boardSize-1)),
+      alive: true
+    }
+    console.log("this randomship 1"+ randomShip1);
+    shipPositions.ai.push(randomShip1);
+    let notAValidShip = true;
+    randomShip2 = {
+      x: Math.round(Math.random()*(boardSize-1)),
+      y: Math.round(Math.random()*(boardSize-1)),
+      alive: true
+    }
+    while (notAValidShip) {
+      if (validatePlacementPosition(randomShip2.x, randomShip2.y, "ai")){
+        notAValidShip = false;
+      }
+      else if (!validatePlacementPosition(randomShip2.x, randomShip2.y, "ai")){
+        randomShip2 = {
+          x: Math.round(Math.random()*(boardSize-1)),
+          y: Math.round(Math.random()*(boardSize-1)),
+          alive: true
+        }
+      }
+    }
+    shipPositions.ai.push(randomShip2);
+    
+  }
+  
+  else if(data !== "size:4,s:{s1:a1,s2:c4}"){
+  let splittedData = data.split(/[{:,}]+/).splice(1);
+  splittedData.forEach((element,i)=>{
+  if (i===0){
+    boardSize=Number(element);
+  }
+  else if (element.length > 1 && element[0]!="s"){
+  
+  let ship = {
+    x: element[0].charCodeAt(0)-97,
+    y: Number(element[1]-1), 
+    alive: true
+  };
+  shipPositions.ai.push(ship);
+  }
+  });
+  refreshBoard(boardSize);
+}
+  }
+  
+function refreshBoard(boardSize){
+  board=[];
+  board2=[];
+
   for (let i = 0; i < boardSize; i++) {
     board.push([]);
     board2.push([]);
@@ -24,36 +88,11 @@ function selectGame(data) {
       board[i].push('');
       board2[i].push('');
     }
-  }
-  evenMoreSplittedData = [];
-  for (let i = 1; i < splittedData.length; i++) {
-      evenMoreSplittedData.push(splittedData[i].split(':'));
-  }
-  let ships = [];
-  ships.push(evenMoreSplittedData[0][2]);
-  for (let i = 1; i < evenMoreSplittedData.length-1; i++) {
-    ships.push(evenMoreSplittedData[i][1]);
-  }
-  ships.push(evenMoreSplittedData[evenMoreSplittedData.length-1][1].slice(0,-1));
-  
-  
-  for (let i = 0; i < ships.length; i++) {
-    let ship = {
-      x: ships[i][0].charCodeAt(0)-97,
-      y: Number(ships[i][1])-1, // or is it y: Number(ships[i][1]-1),?
-      alive: true
-    };
-
-    shipPositions.ai.push(ship);
-    
-  }
-  
+  }  
 displayBoard({boardnumber: 1,board: board});
 displayBoard({boardnumber: 2,board: board2});
-
-shootingPhase = false;
-playerTurn = true;
 }
+
 
 function handleClick(data) {
   let x = data.x.charCodeAt()-65;
@@ -74,22 +113,10 @@ function handleClick(data) {
 function resetGame() {
   shipPositions.ai.forEach((element) => {element.alive = true});
   let boardSize = board.length;
-  let board = [];
-  let board2 = [];
-  for(let i = 0; i < boardSize; i++) {
-    board.push([]);
-    board2.push([]);
-    for(let j = 0; j < boardSize; j++) {
-      board[i].push("");
-      board2[i].push("");
-    }
-  }
   shipPositions.player = [];
-  displayBoard({boardnumber: 1,board: board});
-  displayBoard({boardnumber: 2,board: board2});
-
   shootingPhase = false;
   playerTurn = true;
+  refreshBoard(boardSize);
 }
 
 function getRandomCoordinates()
@@ -140,7 +167,7 @@ displayMessage("message", "green");
 displayTextMessage("text message", "red");
 
 function placeShip(x, y) {
-  if (!validatePlacementPosition(x, y)) {
+  if (!validatePlacementPosition(x, y, "player")) {
     displayMessage("You can not place ship there!", "red");
   } else {
   let ship = {x:x, y:y, alive:true};
@@ -154,9 +181,16 @@ function placeShip(x, y) {
  }
 }
 
-function validatePlacementPosition(x, y,) {
+function validatePlacementPosition(x, y, whichPlayer) {
   let result = true;
-    shipPositions.player.forEach((element) => {
+  let ships = [];
+  if (whichPlayer === "player"){
+    ships = shipPositions.player;
+  }
+  else if (whichPlayer === "ai"){
+    ships = shipPositions.ai;
+  }  
+   ships.forEach((element) => {
       if (x === element.x && y === element.y) {
         result = false; 
       } else if (x === element.x-1 && y === element.y) {
@@ -169,30 +203,26 @@ function validatePlacementPosition(x, y,) {
         result = false;
       }
       else {result = true;
+      }
+    });  return result; 
 }
-    });  return result;  
-  }
+ 
+
 
   function isItAHit(x, y, whoIsShooting) {
-    console.log("fn isITAHit has been called")
     let hit = 0;
     let b;
     let ships;
     if (whoIsShooting === 'player'){
-      console.log("by the player");
       b = board;
       ships = shipPositions.ai;
     } else if (whoIsShooting === 'ai') {
-      console.log("by the AI");
       b = board2;
       ships = shipPositions.player;
     }
-    console.log("starting to itarate over ships array")
     ships.forEach((element) => {
       if (x === element.x && y === element.y) {
         hit = 1; // if its a hit, return 1
-        console.log("it has found a match, so setting hit to 1")
-        console.log("this hit now: "+hit+"");
       }
     });
   
@@ -203,23 +233,18 @@ function validatePlacementPosition(x, y,) {
         } else if (b[x][y] === '') {
           if(hit===1){
           hit = 1; /// it its a miss, return 3
-          console.log("this ovvrrides the previous hit, so hit is now  "+hit);
           }
           else{hit =3;
           }
         }
       }
     } ////
-    console.log("about to return hit, which is currently "+hit);
     return hit;
   }
 
   function playerShoot(x, y) {
-    console.log("fn playerShoot has been called");
     let hit = isItAHit(x, y,"player"); // 1 for hit, 2 for already shooting there, 3 for a miss
-    console.log("fn playerShoot called isItAHit function and received value, which is "+hit+" lets check it")
     if (hit === 1){
-      console.log("if zou see this good!")
       board[x][y] = 'Ø';
       displayBoard({boardnumber: 1,board: board});
       displayMessage("You hit ai's ship!", "green");
